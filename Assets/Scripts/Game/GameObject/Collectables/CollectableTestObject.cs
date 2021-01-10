@@ -1,6 +1,6 @@
 ﻿
 
-namespace Game.GameObject.Collectable
+namespace Game.GameObjects.Collectable
 {
     using Game.Interface.Interaction.Coin;
     using System;

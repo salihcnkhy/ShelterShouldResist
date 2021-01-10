@@ -6,26 +6,12 @@ using UnityEngine;
 
 namespace Game.Generic
 {
-    public class BaseObject : MonoBehaviour
+    public abstract class BaseObject : MonoBehaviour
     {
-       protected GameSystem gameSystem;
+        public virtual void Init() {  }
+        public virtual void HandleUpdate() {  }
+        public virtual void HandleFixedUpdate() { }
 
-       virtual public void Preinit()
-        {
-
-        }
-
-        virtual public void Init()
-        {
-
-        }
-        
-
-
-        public void SetGameSystem(GameSystem gameSystem)
-        {
-            this.gameSystem = gameSystem;
-        }
     }
 
 }

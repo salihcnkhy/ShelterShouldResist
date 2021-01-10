@@ -10,12 +10,14 @@ namespace Game.Systems.UISystem
     {
 
 
-        public UISystem Make(Player player)
+        public UISystem Make(GameData gameData)
         {
             GameObject uiElement = Resources.Load<GameObject>("Prefabs/Game/UI/UIElements");
             uiElement = GameObject.Instantiate<GameObject>(uiElement);
+
             UISystem uiSystem = new UISystem(uiElement.GetComponentInChildren<Canvas>());
-            uiSystem.SetPlayerEvents(player);
+            uiSystem.InjectGameData(gameData);
+
             return uiSystem;
         }
     }

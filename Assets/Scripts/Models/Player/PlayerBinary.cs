@@ -20,7 +20,7 @@ namespace Game.Model.CoreData
         {
             return new PlayerBinary
             {
-                Coin = player.Coin,
+                Coin = player.Coin.Get(),
                 dX = player.Position.x,
                 dY = player.Position.y
             };

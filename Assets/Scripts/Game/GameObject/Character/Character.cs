@@ -1,5 +1,5 @@
 ﻿
-namespace Game.GameObject.Character
+namespace Game.GameObjects.Character
 {
     using Game.Generic;
     using Game.Interface.Interaction;
@@ -14,9 +14,18 @@ namespace Game.GameObject.Character
     public class Character : BaseObject
     {
 
-       Player PlayerRef;
+        Player PlayerRef;
+        CharacterMovement CharacterMovement;
+        CameraControl CameraControl;
+        public override void Init()
+        {
+            CharacterMovement = gameObject.GetComponent<CharacterMovement>();
+            CameraControl = gameObject.GetComponent<CameraControl>();
 
-       public void SetPlayerModel(ref Player playerModel)
+            CameraControl.Init();
+        }
+
+        public void SetPlayerModel(ref Player playerModel)
         {
             this.PlayerRef = playerModel;
             SetProperitiesFromPlayerModel();
@@ -25,6 +34,17 @@ namespace Game.GameObject.Character
         private void SetProperitiesFromPlayerModel()
         {
             transform.position = PlayerRef.Position;
+        }
+
+        public override void HandleUpdate()
+        {
+            CharacterMovement.HandleUpdate();
+            CameraControl.HandleUpdate();
+        }
+
+        public override void HandleFixedUpdate()
+        {
+            CharacterMovement.HandleFixedUpdate();
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -39,8 +59,10 @@ namespace Game.GameObject.Character
         private void IncreaseCoin()
         {
             if (PlayerRef != null)
-                PlayerRef.Coin += 10;
+                PlayerRef.Coin.Increase(10);
         }
+
+
     }
 
 }

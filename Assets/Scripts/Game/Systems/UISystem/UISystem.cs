@@ -25,10 +25,20 @@ namespace Game.Systems.UISystem
         {
             ScoreText = canvas.transform.Find("Text").GetComponent<Text>();
         }
+
+        public void InjectGameData(GameData gameData)
+        {
+            SetupViews(gameData);
+            SetPlayerEvents(gameData.Player);
+        }
+        public void SetupViews(GameData gameData)
+        {
+            ScoreText.text = gameData.Player.Coin.Get().ToString();
+        }
+
         public void SetPlayerEvents(Player player)
         {
-            ScoreText.text = player.Coin.ToString();
-            player.OnCoinChange += OnCoinTextChange;
+            player.Coin.OnChangeEvent += OnCoinTextChange;
         }
 
 
