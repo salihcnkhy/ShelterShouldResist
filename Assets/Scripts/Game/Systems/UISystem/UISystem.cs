@@ -1,6 +1,7 @@
 ﻿
 namespace Game.Systems.UISystem
 {
+    using Game.Interface.Systems;
     using Game.Model;
     using Game.Utils.SaveLoad;
     using UnityEngine;
@@ -8,17 +9,24 @@ namespace Game.Systems.UISystem
 
     using Text = TMPro.TextMeshProUGUI;
 
-    public class UISystem
+    public class UISystem : IBaseSystem
     {
 
         Canvas canvas;
-
+        GameData GameData;
         private Text ScoreText;
 
-        public UISystem(Canvas canvas)
+        public UISystem(Canvas canvas, GameData gameData)
         {
             this.canvas = canvas;
+            this.GameData = gameData;
+        }
+
+        public void RunSystem()
+        {
             SetComponents();
+            SetupViews();
+            SetPlayerEvents();
         }
 
         private void SetComponents()
@@ -26,26 +34,20 @@ namespace Game.Systems.UISystem
             ScoreText = canvas.transform.Find("Text").GetComponent<Text>();
         }
 
-        public void InjectGameData(GameData gameData)
+        private void SetupViews()
         {
-            SetupViews(gameData);
-            SetPlayerEvents(gameData.Player);
-        }
-        public void SetupViews(GameData gameData)
-        {
-            ScoreText.text = gameData.Player.Coin.Get().ToString();
+            ScoreText.text = GameData.Player.Coin.Get().ToString();
         }
 
-        public void SetPlayerEvents(Player player)
+        private void SetPlayerEvents()
         {
-            player.Coin.OnChangeEvent += OnCoinTextChange;
+            GameData.Player.Coin.OnChangeEvent += OnCoinTextChange;
         }
-
-
         private void OnCoinTextChange(int coin)
         {
             ScoreText.text = coin.ToString();
         }
 
+  
     }
 }

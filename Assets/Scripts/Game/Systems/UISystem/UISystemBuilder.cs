@@ -15,8 +15,7 @@ namespace Game.Systems.UISystem
             GameObject uiElement = Resources.Load<GameObject>("Prefabs/Game/UI/UIElements");
             uiElement = GameObject.Instantiate<GameObject>(uiElement);
 
-            UISystem uiSystem = new UISystem(uiElement.GetComponentInChildren<Canvas>());
-            uiSystem.InjectGameData(gameData);
+            UISystem uiSystem = new UISystem(uiElement.GetComponentInChildren<Canvas>(), gameData);
 
             return uiSystem;
         }

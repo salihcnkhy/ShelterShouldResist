@@ -75,12 +75,16 @@
     <Compile Include="Assets\Scripts\Game\GameObject\Character\CharacterMovement.cs" />
     <Compile Include="Assets\Scripts\Game\GameObject\Character\CharacterTrigger.cs" />
     <Compile Include="Assets\Scripts\Game\GameObject\Collectables\CollectableTestObject.cs" />
+    <Compile Include="Assets\Scripts\Game\GameObject\Ground\DefaultGround.cs" />
+    <Compile Include="Assets\Scripts\Game\Systems\EnvironmentSystem\EnvironmentSystem.cs" />
+    <Compile Include="Assets\Scripts\Game\Systems\EnvironmentSystem\EnvironmentSystemBuilder.cs" />
     <Compile Include="Assets\Scripts\Game\Systems\GameSystem\GameSystem.cs" />
     <Compile Include="Assets\Scripts\Game\Systems\GameSystem\GameSystemBuilder.cs" />
     <Compile Include="Assets\Scripts\Game\Systems\UISystem\UISystem.cs" />
     <Compile Include="Assets\Scripts\Game\Systems\UISystem\UISystemBuilder.cs" />
     <Compile Include="Assets\Scripts\Generic\BaseObject.cs" />
     <Compile Include="Assets\Scripts\Generic\ObserverPattern\SKObservable.cs" />
+    <Compile Include="Assets\Scripts\Interface\IBaseSystem.cs" />
     <Compile Include="Assets\Scripts\Interface\ICoin.cs" />
     <Compile Include="Assets\Scripts\Interface\IInteractable.cs" />
     <Compile Include="Assets\Scripts\MainMenu\MainMenu.cs" />

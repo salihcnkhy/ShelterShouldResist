@@ -12,11 +12,14 @@ namespace Game.Systems.GameSystem
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System;
+    using Game.Systems.Environment;
+    using Game.Interface.Systems;
 
-    public class GameSystem : MonoBehaviour
+    public class GameSystem : MonoBehaviour, IBaseSystem
     {
 
         private UISystem UISystem;
+        private EnvironmentSystem EnvironmentSystem;
         private GameData GameData;
 
         private Character CharacterObject;
@@ -31,8 +34,9 @@ namespace Game.Systems.GameSystem
         private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
             Debug.Log("Scene Loaded");
+            BuildSystems();
+            RunSystem();
             InstantiateBaseObjects();
-            SetupSystems();
             RunInit();
             IsGameSceneLoaded = true;
             StartCoroutine(GameSaverPerSec());
@@ -48,11 +52,17 @@ namespace Game.Systems.GameSystem
             CharacterObject = Resources.Load<Character>("Prefabs/Player/Knight");
             CharacterObject = Instantiate(CharacterObject);
             CharacterObject.SetPlayerModel(ref GameData.Player);
-
         }
-        private void SetupSystems()
+        private void BuildSystems()
         {
             UISystem = new UISystemBuilder().Make(GameData);
+            EnvironmentSystem = new EnvironmentSystemBuilder().Make();
+        }
+
+        public void RunSystem()
+        {
+            UISystem.RunSystem();
+            EnvironmentSystem.RunSystem();
         }
 
         private void RunInit()
@@ -86,6 +96,7 @@ namespace Game.Systems.GameSystem
 
             }
         }
+
     }
 
 }
