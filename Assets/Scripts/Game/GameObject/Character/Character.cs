@@ -17,11 +17,18 @@ namespace Game.GameObjects.Character
         Player PlayerRef;
         CharacterMovement CharacterMovement;
         CameraControl CameraControl;
-        public override void Init()
+        CharacterTrigger CharacterTrigger;
+        public override void PreInit()
         {
             CharacterMovement = gameObject.GetComponent<CharacterMovement>();
             CameraControl = gameObject.GetComponent<CameraControl>();
+            CharacterTrigger = gameObject.GetComponent<CharacterTrigger>();
 
+            CharacterMovement.InjectShared(Shared);
+        }
+
+        public override void Init()
+        {
             CameraControl.Init();
         }
 
@@ -29,6 +36,10 @@ namespace Game.GameObjects.Character
         {
             this.PlayerRef = playerModel;
             SetProperitiesFromPlayerModel();
+        }
+        public Player GetPlayerModel()
+        {
+            return this.PlayerRef;
         }
 
         private void SetProperitiesFromPlayerModel()
@@ -46,22 +57,6 @@ namespace Game.GameObjects.Character
         {
             CharacterMovement.HandleFixedUpdate();
         }
-
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            // Handle all object collison here or create new class for it
-
-            collision.gameObject
-                .GetComponent<ICoin>()?
-                .CollectCoin(IncreaseCoin);
-        }
-
-        private void IncreaseCoin()
-        {
-            if (PlayerRef != null)
-                PlayerRef.Coin.Increase(10);
-        }
-
 
     }
 

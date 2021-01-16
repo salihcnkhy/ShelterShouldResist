@@ -1,102 +1,90 @@
 ﻿
 namespace Game.Systems.GameSystem
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+
     using UnityEngine;
-    using Game.Systems.UISystem;
+    using UnityEngine.SceneManagement;
+
     using Game.GameObjects.Character;
     using Game.Model;
-    using UnityEngine.SceneManagement;
-    using System.Collections;
-    using Game.Utils.SaveLoad;
-    using Game.Generic.SKObserver;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System;
-    using Game.Systems.Environment;
+    using Game.Constants;
+    using Game.Generic;
     using Game.Interface.Systems;
 
-    public class GameSystem : MonoBehaviour, IBaseSystem
-    {
+    using Game.Systems.Environment;
+    using Game.Systems.UISystem;
+    using Game.Systems.DayCycle;
+    using Game.Systems.Save;
+    using Game.Systems.WaveSystem;
+    using Game.Generic.SKObserver;
+    using Game.Systems.EnemyCreation;
+    using Game.Systems.EventSystem;
+    using Game.Generic.Base;
 
-        private UISystem UISystem;
-        private EnvironmentSystem EnvironmentSystem;
-        private GameData GameData;
+    public class GameSystem : BaseMainSystem
+    {
+        
 
         private Character CharacterObject;
 
-        private bool IsGameSceneLoaded = false;
+        private void Awake() => DontDestroyOnLoad(this);
 
-        private void Awake()
+        public override void InitMainSystem(GameData gameData)
         {
-            DontDestroyOnLoad(this);
+            Shared.GameData = gameData;
+            Shared.ObservableBaseObjects = SKObservableList<BaseObject>.Empty();
+            Shared.SubSystems = new List<BaseSubSystem>();
+            Shared.MonoBehaviourReferance = this;
+            Shared.EventSystem = new EventSystem(Shared.GameData);
             SceneManager.sceneLoaded += OnSceneLoaded;
+
+            base.InitMainSystem(gameData);
         }
+
         private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
-            Debug.Log("Scene Loaded");
-            BuildSystems();
-            RunSystem();
-            InstantiateBaseObjects();
-            RunInit();
-            IsGameSceneLoaded = true;
-            StartCoroutine(GameSaverPerSec());
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+
+            CreateBaseObjects();
+            InitSystems();
         }
 
-        public void SetGameData(GameData gameData)
+        #region Base Objects Init
+
+        private void CreateBaseObjects()
         {
-            GameData = gameData;
+            CreateCharacter();
         }
 
-        private void InstantiateBaseObjects()
+        private void CreateCharacter()
         {
             CharacterObject = Resources.Load<Character>("Prefabs/Player/Knight");
             CharacterObject = Instantiate(CharacterObject);
-            CharacterObject.SetPlayerModel(ref GameData.Player);
+            CharacterObject.SetPlayerModel(ref Shared.GameData.Player);
+            Shared.ObservableBaseObjects.Append(CharacterObject);
         }
-        private void BuildSystems()
+        #endregion
+
+        #region System Init 
+        private void InitSystems()
         {
-            UISystem = new UISystemBuilder().Make(GameData);
-            EnvironmentSystem = new EnvironmentSystemBuilder().Make();
+            AddSubSystem<UISystem>();
+            AddSubSystem<EnvironmentSystem>();
+            AddSubSystem<SaveSystem>();
+            AddSubSystem<DayCycleSystem>();
+            AddSubSystem<WaveSystem>();
+            AddSubSystem<EnemyCreationSystem>();
         }
 
-        public void RunSystem()
-        {
-            UISystem.RunSystem();
-            EnvironmentSystem.RunSystem();
-        }
+        #endregion
 
-        private void RunInit()
-        {
-            CharacterObject.Init();
-        }
+        #region GameFlow 
 
-        private void Update()
-        {
-            if(IsGameSceneLoaded)
-            {
-                CharacterObject.HandleUpdate();
-            }
-        }
 
-        private void FixedUpdate()
-        {
-            if (IsGameSceneLoaded)
-            {
-                CharacterObject.HandleFixedUpdate();
-            }
-        }
-
-        IEnumerator GameSaverPerSec()
-        {
-            while(true)
-            {
-                yield return new WaitForSeconds(1);
-                GameData.Player.Position = CharacterObject.transform.position;
-                new GameSaver().SaveGameData(GameData);
-
-            }
-        }
-
+        #endregion
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Game.Generic;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,13 +8,13 @@ namespace Game.Systems.Environment
 {
     public class EnvironmentSystemBuilder
     {
-        public EnvironmentSystem Make()
+    /*    public EnvironmentSystem Make(Transform environmentObjectTransform)
         {
-            var environmentObj = GameObject.Find("Environment");
-            var environmentSystem = new EnvironmentSystem(environmentObj);
+            var environmentSystem = new EnvironmentSystem(environmentObjectTransform);
 
             return environmentSystem;
         }
+    */
     }
 
 }

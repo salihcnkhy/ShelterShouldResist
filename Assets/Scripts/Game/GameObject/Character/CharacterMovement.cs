@@ -27,6 +27,7 @@ namespace Game.GameObjects.Character
         {
             SetDirection();
             Rigidbody2D.velocity = new Vector2(horizontalMovement, Rigidbody2D.velocity.y);
+          //  if (horizontalMovement != 0) Shared.EventSystem.BuildMenuOpenTrigger.Set(false);
         }
 
         private void HandleAnimation()

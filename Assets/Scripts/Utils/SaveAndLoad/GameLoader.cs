@@ -1,7 +1,5 @@
 ﻿using Game.Model;
 using Game.Model.CoreData;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
@@ -13,7 +11,7 @@ namespace Game.Utils.SaveLoad
     {
         public GameData LoadGameData()
         {
-           
+
             string path = Application.persistentDataPath + "/gameData.data";
             if (File.Exists(path))
             {

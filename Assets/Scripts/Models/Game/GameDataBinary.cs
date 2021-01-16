@@ -13,18 +13,23 @@ namespace Game.Model.CoreData
 
         public PlayerBinary PlayerBinary;
 
-
+        private int WaveCount;
+        private int CurrentDay;
+        private int DaysToNextWave;
         public static GameDataBinary InitWithGameData(GameData gameData)
         {
             return new GameDataBinary
             {
-                PlayerBinary = PlayerBinary.InitWithPlayerData(gameData.Player)
+                PlayerBinary = PlayerBinary.InitWithPlayerData(gameData.Player),
+                WaveCount = gameData.WaveCount,
+                CurrentDay = gameData.CurrentDay,
+                DaysToNextWave = gameData.DaysToNextWave
             };
         }
 
         public GameData ConvertGameData()
         {
-            return new GameData(PlayerBinary.ConvertPlayer(), false);
+            return new GameData(PlayerBinary.ConvertPlayer(), WaveCount, CurrentDay, DaysToNextWave, false);
 
         }
     }

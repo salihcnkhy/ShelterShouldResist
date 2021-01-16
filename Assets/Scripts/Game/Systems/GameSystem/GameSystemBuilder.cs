@@ -15,7 +15,7 @@ namespace Game.Systems.GameSystem
             GameSystem gameSystem = Resources.Load<GameSystem>("Prefabs/Game/Systems/GameSystem");
             gameSystem = GameObject.Instantiate<GameSystem>(gameSystem);
 
-            gameSystem.SetGameData(gameData);
+            gameSystem.InitMainSystem(gameData);
 
             return gameSystem;
         }

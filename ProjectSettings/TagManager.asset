@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Environment
+  - BackgroundLight
+  - GroundLight
   layers:
   - Default
   - TransparentFX
@@ -13,8 +16,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Background
+  - Environment
   - 
   - 
   - 
@@ -40,4 +43,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3288856495
+    locked: 0
+  - name: Ground
+    uniqueID: 4061830649
+    locked: 0
+  - name: Player
+    uniqueID: 634909567
+    locked: 0
+  - name: Interactable
+    uniqueID: 2813210205
     locked: 0

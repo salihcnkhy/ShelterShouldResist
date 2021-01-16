@@ -9,18 +9,18 @@ namespace Game.Model
     public class Player
     {
 
-        public SKObservableInt Coin;
+        public int Coin;
         private Vector2 _position;
 
         public Player()
         {
-            Coin = new SKObservableInt();
+            Coin = 0;
             Position = Vector2.zero;
         }
 
         public Player(int coin, Vector2 position)
         {
-            Coin = new SKObservableInt(coin);
+            Coin = coin;
             this.Position = position;
         }
   

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Game.Generic.SKObserver
 {
-    public abstract class SKObservable<T>
+    public class SKObservable<T>
     {
         private T _wrappedValue;
         protected T Wrapped
@@ -21,33 +21,48 @@ namespace Game.Generic.SKObserver
         }
 
         public T Get() => Wrapped;
-
         public delegate void OnChange(T newValue);
         public event OnChange OnChangeEvent;
-    
+        public SKObservable(T value) => Set(value);
+        public void Set(T value) => Wrapped = value;
     }
 
     public class SKObservableInt : SKObservable<int>
     {
-        public SKObservableInt(int value = 0) => Set(value);
+        public SKObservableInt(int value = 0) : base(value) { }
+
         public void Increase(int value) => Wrapped += value;
         public void Decrease(int value) => Wrapped -= value;
-        public void Set(int value) => Wrapped = value;
 
     }
 
     public class SKObservableFloat : SKObservable<float>
     {
-        public SKObservableFloat(float value = 0) => Set(value);
+        public SKObservableFloat(float value = 0f) : base(value) { }
 
         public void Increase(float value) => Wrapped += value;
         public void Decrease(float value) => Wrapped -= value;
-        public void Set(float value) => Wrapped = value;
+    }
+
+    public class SKObservableTrigger
+    {
+        public delegate void OnTrigger();
+        public event OnTrigger OnTriggerEvent;
+        public void Fire() => OnTriggerEvent?.Invoke();
+    }
+
+    public class SKObservableObjectTrigger
+    {
+        public delegate void OnTrigger(BaseObject Object);
+        public event OnTrigger OnTriggerEvent;
+        public void Fire(BaseObject Object) => OnTriggerEvent?.Invoke(Object);
     }
 
     public class SKObservableList<T> : SKObservable<List<T>>
     {
-        public SKObservableList() => Set(new List<T>());
+        public SKObservableList(List<T> value) : base(value == null ? new List<T>() : value ) { }
+
+        public static SKObservableList<T> Empty() => new SKObservableList<T>(null);
 
         public delegate void OnNewElementAppened(T newValue);
         public event OnNewElementAppened OnNewElementAppenedEvent;
@@ -74,7 +89,6 @@ namespace Game.Generic.SKObserver
 
             return success;
         }
-        public void Set(List<T> value) => Wrapped = value;
     }
 
 }

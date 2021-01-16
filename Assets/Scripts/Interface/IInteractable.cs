@@ -10,7 +10,7 @@ namespace Game.Interface.Interaction
     public interface IInteractable
     {
         void HandleTriggerEnterInteraction();
-       
+        void HandleTriggerExitInteraction();
     }
 
 }
