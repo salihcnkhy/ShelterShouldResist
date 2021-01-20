@@ -23,34 +23,35 @@ namespace Game.Systems.DayCycle
 
         IEnumerator DayCounter()
         {
-            while(true)
+            while (true)
             {
                 yield return new WaitForSeconds(1);
-                    Shared.EventSystem.CurrentTime.Increase(1);
-                    TimeRange currentTimeRange = Shared.EventSystem.CurrentTime.Get().GetRange();
-                    switch (currentTimeRange)
-                    {
-                        case TimeRange.Dawn:
-                            break;
-                        case TimeRange.Day:
-                            break;
-                        case TimeRange.Evening:
-                            break;
-                        case TimeRange.Night:
-                            break;
-                        case TimeRange.NewDay:
-                            Debug.Log("Passing new day");
-                            Shared.EventSystem.CurrentTime.Set(0);
-                            Shared.EventSystem.CurrentDay.Increase(1);
-                            Shared.EventSystem.DaysToNextWave.Decrease(1);
-                            break;
-                    }
-                    if (Shared.EventSystem.CurrentTimeRange.Get() != currentTimeRange)
-                        Shared.EventSystem.CurrentTimeRange.Set(currentTimeRange);
+                Shared.EventSystem.CurrentTime.Increase(1);
+                TimeRange currentTimeRange = Shared.EventSystem.CurrentTime.Get().GetRange();
+                switch (currentTimeRange)
+                {
+                    case TimeRange.Dawn:
+                        break;
+                    case TimeRange.Day:
+                        break;
+                    case TimeRange.Evening:
+                        break;
+                    case TimeRange.Night:
+                        break;
+                    case TimeRange.NewDay:
+                        Debug.Log("Passing new day");
+                        Shared.EventSystem.CurrentDay.Increase(1);
+                        Shared.EventSystem.NewDayTrigger.Fire();
+                        Shared.EventSystem.CurrentTime.Set(0);
+                        Shared.EventSystem.DaysToNextWave.Decrease(1);
+                        break;
                 }
+                if (Shared.EventSystem.CurrentTimeRange.Get() != currentTimeRange)
+                    Shared.EventSystem.CurrentTimeRange.Set(currentTimeRange);
             }
         }
-
     }
+
+}
 
 

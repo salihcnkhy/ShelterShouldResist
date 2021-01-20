@@ -25,14 +25,14 @@ namespace Game.GameObjects.Character
 
             collision.gameObject
                 .GetComponent<IInteractable>()?
-                .HandleTriggerEnterInteraction();
+                .HandleTriggerEnterInteraction(this);
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
             collision.gameObject
                  .GetComponent<IInteractable>()?
-                 .HandleTriggerExitInteraction();
+                 .HandleTriggerExitInteraction(this);
         }
 
         private void IncreaseCoin()

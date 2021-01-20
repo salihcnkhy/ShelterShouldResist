@@ -26,7 +26,7 @@ namespace Game.Systems.GameSystem
 
     public class GameSystem : BaseMainSystem
     {
-        
+
 
         private Character CharacterObject;
 
@@ -36,7 +36,6 @@ namespace Game.Systems.GameSystem
         {
             Shared.GameData = gameData;
             Shared.ObservableBaseObjects = SKObservableList<BaseObject>.Empty();
-            Shared.SubSystems = new List<BaseSubSystem>();
             Shared.MonoBehaviourReferance = this;
             Shared.EventSystem = new EventSystem(Shared.GameData);
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -50,6 +49,19 @@ namespace Game.Systems.GameSystem
 
             CreateBaseObjects();
             InitSystems();
+            Shared.EventSystem.NewDayTrigger.OnTriggerEvent += OnNewDayTrigger;
+
+        }
+
+        private void OnNewDayTrigger()
+        {
+            Shared.GameData.CurrentDay = Shared.EventSystem.CurrentDay.Get();
+            Shared.GameData.CurrentTime = Shared.EventSystem.CurrentTime.Get();
+            Shared.GameData.CurrentTimeRange = TimeRange.Day;
+            Shared.GameData.DaysToNextWave = Shared.EventSystem.DaysToNextWave.Get();
+            Shared.GameData.WaveCount = Shared.EventSystem.WaveCount.Get();
+            Shared.GameData.Player.Coin = Shared.EventSystem.CoinCount.Get();
+            Shared.GameData.Player.Position = CharacterObject.transform.position;
         }
 
         #region Base Objects Init

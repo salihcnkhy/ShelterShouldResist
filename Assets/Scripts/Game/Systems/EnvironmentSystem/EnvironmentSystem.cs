@@ -1,7 +1,6 @@
 ﻿
 namespace Game.Systems.Environment
 {
-    using Game.GameObjects.Ground;
     using Game.Generic.Base;
     using Game.Interface.Systems;
     using System.Collections;
@@ -15,24 +14,31 @@ namespace Game.Systems.Environment
 
     public sealed class EnvironmentSystem : BaseSubSystem
     {
-        private DefaultGround DefaultGround;
+
+
         private GameObject EnvironmentObject;
+        private Transform CharacterTransform;
+
+        private Transform PlaceablesObjectTransform;
+        
         private ParallaxEffect ParallaxEffect;
-        private List<DefaultGround> DefaultGrounds;
+        
         private Light2D BackgroundLight;
         private Light2D GroundLight;
         Coroutine LerpColorCoroutine;
+
+        private PlaceableObject SelectedPlaceableObject;
 
         public EnvironmentSystem(MainSystemShared Shared) : base(Shared)
         {
             BackgroundLight = GameObject.FindGameObjectWithTag("BackgroundLight").GetComponent<Light2D>();
             GroundLight = GameObject.FindGameObjectWithTag("GroundLight").GetComponent<Light2D>();
-            
+
+            CharacterTransform = GameObject.FindGameObjectWithTag("Player").transform;
             EnvironmentObject = GameObject.FindGameObjectWithTag("Environment");
+            PlaceablesObjectTransform = EnvironmentObject.transform.Find("Placeables");
             ParallaxEffect = EnvironmentObject.GetComponent<ParallaxEffect>();
 
-            DefaultGround = Resources.Load<DefaultGround>("Prefabs/Game/Environment/Ground");
-            DefaultGrounds = new List<DefaultGround>();
             SetSubSystem();
         }
 
@@ -41,27 +47,66 @@ namespace Game.Systems.Environment
             CurrentTimeRangeChanged(Shared.GameData.CurrentTimeRange);
             CreateEnvironment();
             SetEvents();
-            AddBaseObjects();
+           // AddBaseObjects();
         }
         protected override void SetEvents()
         {
             Shared.EventSystem.CurrentTimeRange.OnChangeEvent += CurrentTimeRangeChanged;
+            Shared.EventSystem.SelectedPlaceableObject.OnChangeEvent += OnPlaceableObjectSelected;
+        }
+
+        private void OnPlaceableObjectSelected(PlaceableObject newValue)
+        {
+            SelectedPlaceableObject = GameObject.Instantiate(newValue, CharacterTransform);
+            Shared.EventSystem.BuildApprovedTrigger.OnTriggerEvent += OnSelectedBuildingApproveClick;
+            Shared.EventSystem.BuildCanceledTrigger.OnTriggerEvent += OnSelectedBuildingCancelClick;
+        }
+
+        private void OnSelectedBuildingCancelClick()
+        {
+            SelectedPlaceableObject.DestroySelf();
+            Shared.EventSystem.BuildApprovedTrigger.OnTriggerEvent -= OnSelectedBuildingApproveClick;
+            Shared.EventSystem.BuildCanceledTrigger.OnTriggerEvent -= OnSelectedBuildingCancelClick;
+        }
+
+        private void OnSelectedBuildingApproveClick()
+        {
+            if(!SelectedPlaceableObject.HasBlocked)
+            {
+                SelectedPlaceableObject.SetParent(PlaceablesObjectTransform);
+                SelectedPlaceableObject.HasPlaced = true;
+                AddBaseObject(SelectedPlaceableObject);
+                Shared.EventSystem.BuildApprovedTrigger.OnTriggerEvent -= OnSelectedBuildingApproveClick;
+                Shared.EventSystem.BuildCanceledTrigger.OnTriggerEvent -= OnSelectedBuildingCancelClick;
+                Shared.EventSystem.BuildSucceedValue.Set(true);
+            }
+            else
+            {
+                Shared.EventSystem.BuildSucceedValue.Set(false);
+                Debug.LogWarning("Engel var yerleştirilemedi");
+            }
+
         }
 
         protected override void AddBaseObjects()
         {
             AddBaseObject(ParallaxEffect);
-            DefaultGrounds.ForEach(item => AddBaseObject(item));
+        }
+      
+        private void CreateEnvironment()
+        {
+
         }
 
+        #region Time Changes
         private void CurrentTimeRangeChanged(Constants.TimeRange newValue)
         {
             Color targetColor;
             Color startColor;
             float step = 0.01f;
 
-            if(LerpColorCoroutine != null)
-            Shared.MonoBehaviourReferance.StopCoroutine(LerpColorCoroutine);
+            if (LerpColorCoroutine != null)
+                Shared.MonoBehaviourReferance.StopCoroutine(LerpColorCoroutine);
 
             switch (newValue)
             {
@@ -87,7 +132,7 @@ namespace Game.Systems.Environment
                     break;
             }
         }
-        IEnumerator LerpColor(float TimeRangeDuration,float OneStepTime ,Color from, Color to)
+        IEnumerator LerpColor(float TimeRangeDuration, float OneStepTime, Color from, Color to)
         {
             float Progress = 0;
             float Increment = OneStepTime / TimeRangeDuration;
@@ -100,24 +145,6 @@ namespace Game.Systems.Environment
                 yield return new WaitForSeconds(OneStepTime);
             }
         }
-
-        private void CreateEnvironment()
-        {
-            CreateGrounds();
-            //Belki sonradan ground üstüne koyulacak şeyleri burada oluşturursun 
-        }
-
-        private void CreateGrounds()
-        {
-            var ground = GameObject.Instantiate(DefaultGround, EnvironmentObject.transform);
-            DefaultGrounds.Add(ground);
-            for (int i = 1; i < 200; i++)
-            {
-                ground = GameObject.Instantiate(DefaultGround, EnvironmentObject.transform);
-                DefaultGrounds.Add(ground);
-                if (i % 2 == 0) ground.SetPosition(DefaultGrounds[i - 1], i); // Add right
-                else ground.SetPosition(DefaultGrounds[i - 1], -i); // Add Left
-            }
-        }
+        #endregion
     }
 }

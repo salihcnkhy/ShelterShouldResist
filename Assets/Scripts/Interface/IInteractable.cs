@@ -2,6 +2,7 @@
 
 namespace Game.Interface.Interaction
 {
+    using Game.Generic;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -9,8 +10,8 @@ namespace Game.Interface.Interaction
 
     public interface IInteractable
     {
-        void HandleTriggerEnterInteraction();
-        void HandleTriggerExitInteraction();
+        void HandleTriggerEnterInteraction(BaseObject TriggeredObject);
+        void HandleTriggerExitInteraction(BaseObject TriggeredObject);
     }
 
 }

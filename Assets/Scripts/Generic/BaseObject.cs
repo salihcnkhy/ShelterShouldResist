@@ -15,12 +15,30 @@ namespace Game.Generic
         {
             this.Shared = Shared;
         }
-        public virtual void PreInit() {  }
+        public virtual void PreInit() 
+        {
+            Debug.LogWarning("BaseObject Pre init");
+        }
         public virtual void Init() {  }
         public virtual void HandleUpdate() {  }
         public virtual void HandleFixedUpdate() { }
         public virtual void HandleLateUpdate() { }
 
+        public void DestroySelf()
+        {
+            GameObject.Destroy(this.gameObject);
+        }
+        public void RemoveSelf()
+        {
+            if (Shared != null)
+                Shared.ObservableBaseObjects.Remove(this);
+
+            GameObject.Destroy(this.gameObject);
+        }
+        public void SetParent(Transform parent)
+        {
+            this.transform.SetParent(parent);
+        }
     }
 
 }
